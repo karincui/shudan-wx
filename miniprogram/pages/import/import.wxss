@@ -1,0 +1,154 @@
+.page.paper-mint {
+  --paper: #f6f4ef;
+  --card: #ffffff;
+  --line: #e7e3d9;
+  --ink: #24261f;
+  --muted: #8a8677;
+  --soft: #b3aea0;
+  --teal: #1f6f5c;
+  --mint: #3fb6a0;
+  --mint-soft: #e7f3ef;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.page-with-tab {
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(246, 244, 239, 0.94);
+  backdrop-filter: blur(12px);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.nav-spacer {
+  width: 100%;
+}
+
+.content {
+  padding: 16rpx 28rpx 0;
+  box-sizing: border-box;
+}
+
+.intro {
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 24rpx;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24rpx;
+}
+
+.entry {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 40rpx 28rpx 28rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.entry-hover {
+  transform: translateY(-6rpx);
+  box-shadow: 0 10rpx 28rpx rgba(63, 182, 160, 0.18);
+}
+
+.entry-ico-wrap {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 14px;
+  background: var(--mint-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18rpx;
+}
+
+.entry-ico {
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
+}
+
+.entry-name {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8rpx;
+}
+
+.entry-desc {
+  font-size: 20rpx;
+  line-height: 1.4;
+  color: var(--soft);
+}
+
+.tips-card {
+  margin-top: 28rpx;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28rpx;
+  box-sizing: border-box;
+}
+
+.tips-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 8rpx;
+}
+
+.tips-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60rpx;
+  border-bottom: 1px dashed #f0ece2;
+  box-sizing: border-box;
+}
+
+.tips-row.last {
+  border-bottom: none;
+}
+
+.tips-k {
+  font-size: 24rpx;
+  color: var(--soft);
+}
+
+.tips-v {
+  font-size: 24rpx;
+  color: var(--ink);
+  font-weight: 500;
+}

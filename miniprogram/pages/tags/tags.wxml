@@ -1,0 +1,131 @@
+<view class="page paper-mint {{dragging ? 'is-dragging' : ''}}" style="{{pageTheme}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <view class="nav-back" bindtap="goBack" hover-class="nav-back-hover" aria-label="返回">‹</view>
+      <text class="nav-title">标签管理</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <view wx:if="{{loading}}" class="boot-mask" catchtouchmove="noop">
+    <view class="boot-card">
+      <view class="boot-orbit">
+        <view class="boot-ring"></view>
+        <view class="boot-book">
+          <text class="boot-book-char">签</text>
+        </view>
+        <view class="boot-dot d1"></view>
+        <view class="boot-dot d2"></view>
+        <view class="boot-dot d3"></view>
+      </view>
+      <text class="boot-text">{{loadingText || '加载中…'}}</text>
+      <view class="boot-bars">
+        <view class="boot-bar b1"></view>
+        <view class="boot-bar b2"></view>
+        <view class="boot-bar b3"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <view class="card add-card">
+      <view class="card-title">添加自定义标签</view>
+      <view class="add-row">
+        <view class="add-input-wrap">
+          <input
+            class="add-input"
+            placeholder="输入标签名，如：破镜重圆"
+            placeholder-class="search-ph"
+            value="{{name}}"
+            confirm-type="done"
+            bindinput="onInput"
+            bindconfirm="onAdd"
+          />
+          <view wx:if="{{name}}" class="search-clear" catchtap="clearName">×</view>
+        </view>
+        <view class="add-btn {{canAdd && !adding ? '' : 'disabled'}}" bindtap="onAdd">
+          <text wx:if="{{!adding}}" class="add-plus">+</text>
+          <text>{{adding ? '…' : '添加'}}</text>
+        </view>
+      </view>
+      <view class="hint muted">添加后可在书单筛选、编辑、表格录入里直接选用</view>
+    </view>
+
+    <view class="search-wrap">
+      <image class="search-ico" src="/images/icons/search.svg" mode="aspectFit" />
+      <input
+        class="search"
+        placeholder="搜索标签"
+        placeholder-class="search-ph"
+        value="{{query}}"
+        bindinput="onQuery"
+        confirm-type="search"
+      />
+      <view wx:if="{{query}}" class="search-clear" catchtap="clearQuery">×</view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <text class="section-title">全部标签</text>
+        <text class="section-count muted">{{filtered.length}} / {{items.length}}</text>
+      </view>
+      <view wx:if="{{!query}}" class="sort-hint muted">长按条目拖拽排序，筛选与选标签会跟随此顺序</view>
+      <view wx:else class="sort-hint muted">搜索时不可排序，清空搜索后再拖拽</view>
+
+      <view wx:if="{{!filtered.length}}" class="empty muted">
+        {{query ? '没有匹配的标签' : '还没有标签'}}
+      </view>
+
+      <view wx:else class="tag-list" id="tagList">
+        <view
+          class="tag-row {{dragging && dragIndex === index ? 'is-ghost' : ''}}"
+          wx:for="{{filtered}}"
+          wx:key="name"
+          data-index="{{index}}"
+          bindtouchstart="onRowTouchStart"
+          bindlongpress="onRowLongPress"
+          bindtouchmove="onRowTouchMove"
+          bindtouchend="onRowTouchEnd"
+          bindtouchcancel="onRowTouchEnd"
+        >
+          <view wx:if="{{!query}}" class="drag-handle" aria-hidden="true">
+            <image class="drag-handle-ico" src="/images/icons/drag-grip.svg" mode="aspectFit" />
+          </view>
+          <view class="tag-chip" style="background:{{item.bg}};color:{{item.fg}};">
+            <text class="chip-name">{{item.name}}</text>
+          </view>
+          <view class="tag-acts">
+            <view
+              wx:if="{{item.canDelete && !dragging}}"
+              class="del-x"
+              data-tag="{{item.name}}"
+              catchtap="onDelete"
+              hover-class="del-x-hover"
+              aria-label="删除"
+            >
+              <image class="del-x-ico" src="/images/icons/close.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view
+    wx:if="{{dragging && dragItem}}"
+    class="drag-layer"
+    catchtouchmove="onDragLayerMove"
+    catchtouchend="onRowTouchEnd"
+    catchtouchcancel="onRowTouchEnd"
+  >
+    <view class="drag-float" style="top: {{dragTop}}px; left: {{dragLeft}}px; width: {{dragWidth}}px;">
+      <view class="drag-handle" aria-hidden="true">
+        <image class="drag-handle-ico" src="/images/icons/drag-grip.svg" mode="aspectFit" />
+      </view>
+      <view class="tag-chip" style="background:{{dragItem.bg}};color:{{dragItem.fg}};">
+        <text class="chip-name">{{dragItem.name}}</text>
+      </view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

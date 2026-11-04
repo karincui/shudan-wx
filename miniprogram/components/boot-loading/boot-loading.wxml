@@ -1,0 +1,19 @@
+<view class="boot-mask" catchtouchmove="noop">
+  <view class="boot-card">
+    <view class="boot-orbit">
+      <view class="boot-ring"></view>
+      <view class="boot-book">
+        <text class="boot-book-char">{{char}}</text>
+      </view>
+      <view class="boot-dot d1"></view>
+      <view class="boot-dot d2"></view>
+      <view class="boot-dot d3"></view>
+    </view>
+    <text class="boot-text">{{text}}</text>
+    <view class="boot-bars">
+      <view class="boot-bar b1"></view>
+      <view class="boot-bar b2"></view>
+      <view class="boot-bar b3"></view>
+    </view>
+  </view>
+</view>

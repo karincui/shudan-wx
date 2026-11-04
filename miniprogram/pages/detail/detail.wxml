@@ -1,0 +1,165 @@
+<view class="page paper-mint" wx:if="{{novel}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title">小说详情</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <view class="content">
+    <view class="hero">
+      <view class="hero-glow"></view>
+      <view class="hero-title">{{novel.title}}</view>
+      <view class="hero-meta">
+        <text wx:if="{{novel.author}}">{{novel.author}}</text>
+        <text wx:if="{{novel.author && tagLine}}"> · </text>
+        <text wx:if="{{tagLine}}">{{tagLine}}</text>
+      </view>
+      <view class="hero-stars">
+        <image
+          class="hero-star"
+          wx:for="{{starList}}"
+          wx:for-item="s"
+          wx:key="*this"
+          src="{{novel.rating >= s ? '/images/icons/star-amber.svg' : '/images/icons/star-amber-off.svg'}}"
+          mode="aspectFit"
+          data-n="{{s}}"
+          bindtap="onRate"
+        />
+      </view>
+    </view>
+
+    <view class="caps">
+      <view
+        class="cap want {{novel.wantToRead ? 'on' : ''}}"
+        bindtap="toggleWant"
+        hover-class="cap-hover"
+      >
+        <image
+          class="cap-ico"
+          src="{{novel.wantToRead ? '/images/icons/heart-on.svg' : '/images/icons/heart-off.svg'}}"
+          mode="aspectFit"
+        />
+        <text>很想看</text>
+      </view>
+      <view
+        class="cap dislike {{novel.disliked ? 'on' : ''}}"
+        bindtap="toggleDislike"
+        hover-class="cap-hover"
+      >
+        <image
+          class="cap-ico"
+          src="{{novel.disliked ? '/images/icons/dislike-on.svg' : '/images/icons/dislike-off.svg'}}"
+          mode="aspectFit"
+        />
+        <text>不喜欢</text>
+      </view>
+      <view
+        class="cap read {{novel.isRead ? 'on' : ''}}"
+        bindtap="toggleRead"
+        hover-class="cap-hover"
+      >
+        <image
+          class="cap-ico"
+          src="{{novel.isRead ? '/images/icons/read.svg' : '/images/icons/unread.svg'}}"
+          mode="aspectFit"
+        />
+        <text>{{novel.isRead ? '已读' : '未读'}}</text>
+      </view>
+      <view
+        class="cap pin {{novel.pinned ? 'on' : ''}}"
+        bindtap="togglePin"
+        hover-class="cap-hover"
+      >
+        <image
+          class="cap-ico"
+          src="{{novel.pinned ? '/images/icons/pin-on.svg' : '/images/icons/pin-off.svg'}}"
+          mode="aspectFit"
+        />
+        <text>置顶</text>
+      </view>
+    </view>
+
+    <view class="card stamp-card">
+      <view class="card-title">最近看过</view>
+      <view class="stamp-row">
+        <view class="stamp-main">
+          <text class="stamp-time">{{lastReadLabel}}</text>
+          <text class="stamp-hint muted">点一下记下当前时间</text>
+        </view>
+        <view class="stamp-btn" bindtap="onStampRead" hover-class="stamp-btn-hover">记一下</view>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{displayTags.length}}">
+      <view class="card-title">标签</view>
+      <view class="tag-flow">
+        <text class="mint-tag" wx:for="{{displayTags}}" wx:key="name">{{item.name}}</text>
+      </view>
+    </view>
+
+    <view class="card review-card">
+      <view class="card-title-row">
+        <text class="card-title">短评</text>
+        <text class="review-edit-btn" bindtap="toggleReviewEdit">{{reviewEditing ? '取消' : '编辑'}}</text>
+      </view>
+      <view wx:if="{{reviewEditing}}" class="review-edit">
+        <textarea
+          class="review-input"
+          value="{{reviewDraft}}"
+          maxlength="500"
+          auto-height
+          placeholder="一句话感想，导出备份时会带上"
+          bindinput="onReviewInput"
+        />
+        <view class="review-save" bindtap="saveReview" hover-class="review-save-hover">保存短评</view>
+      </view>
+      <view wx:elif="{{novel.review}}" class="quote">{{novel.review}}</view>
+      <view wx:else class="review-empty muted">还没有短评，点右上角写一句</view>
+    </view>
+
+    <view class="card" wx:if="{{novel.synopsis}}">
+      <view class="card-title">简介</view>
+      <text class="synopsis">{{novel.synopsis}}</text>
+    </view>
+
+    <view class="card" wx:if="{{novel.attachmentName}}">
+      <view class="card-title">附件</view>
+      <view class="attach">
+        <view class="attach-ico-wrap">
+          <image class="attach-ico" src="/images/icons/file-mint.svg" mode="aspectFit" />
+        </view>
+        <view class="attach-main">
+          <view class="attach-name">{{novel.attachmentName}}</view>
+          <view wx:if="{{attachSizeLabel}}" class="attach-size">{{attachSizeLabel}}</view>
+        </view>
+        <view class="attach-btn" bindtap="openAttach">{{isText ? '阅读' : '打开'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-spacer"></view>
+
+  <view class="footer">
+    <view class="foot-btn del" bindtap="onDelete" hover-class="foot-btn-hover">
+      <image class="foot-ico" src="/images/icons/delete-coral.svg" mode="aspectFit" />
+      <text>删除</text>
+    </view>
+    <view class="foot-btn edit" bindtap="goEdit" hover-class="foot-btn-hover">
+      <image class="foot-ico" src="/images/icons/edit-mint.svg" mode="aspectFit" />
+      <text>编辑</text>
+    </view>
+  </view>
+
+</view>
+
+<view class="page paper-mint empty" wx:elif="{{loaded}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title">小说详情</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+  <view class="empty-tip">找不到这本书</view>
+  <mint-toast id="mintToast" />
+</view>

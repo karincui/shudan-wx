@@ -1,0 +1,290 @@
+.page {
+  padding: 24rpx 20rpx 48rpx;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(42, 36, 28, 0.08);
+  padding: 28rpx 20rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.head {
+  padding: 0 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding: 0 4rpx;
+}
+
+.tb-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  background: #fff;
+  color: var(--ink);
+  border: 1rpx solid rgba(42, 36, 28, 0.14);
+}
+
+.tb-btn.primary {
+  background: #2f6f6a;
+  color: #fff;
+  border-color: #2f6f6a;
+}
+
+.tb-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.tip {
+  margin: 14rpx 8rpx 16rpx;
+  font-size: 22rpx;
+}
+
+.table-scroll {
+  width: 100%;
+  border: 1rpx solid rgba(42, 36, 28, 0.1);
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.table {
+  min-width: 980rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.tr {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1rpx solid rgba(42, 36, 28, 0.08);
+  background: #fff;
+}
+
+.tr:last-child {
+  border-bottom: none;
+}
+
+.tr.th {
+  background: var(--bg);
+}
+
+.tr.th .td {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #5a5046;
+  padding: 16rpx 10rpx;
+}
+
+.td {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  border-right: 1rpx solid rgba(42, 36, 28, 0.06);
+  min-height: 72rpx;
+}
+
+.td:last-child {
+  border-right: none;
+}
+
+.idx {
+  width: 64rpx;
+  justify-content: center;
+  color: #8a7f72;
+  font-size: 22rpx;
+  flex-shrink: 0;
+}
+
+.title-col {
+  width: 240rpx;
+  flex-shrink: 0;
+}
+
+.author-col {
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+.syn-col {
+  width: 260rpx;
+  flex-shrink: 0;
+}
+
+.tags-col {
+  width: 200rpx;
+  flex-shrink: 0;
+  padding: 0 10rpx;
+  gap: 4rpx;
+}
+
+.tags-col.pick {
+  justify-content: space-between;
+}
+
+.tags-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tags-caret {
+  flex-shrink: 0;
+  color: #8a7f72;
+  font-size: 22rpx;
+}
+
+.del-col {
+  width: 64rpx;
+  flex-shrink: 0;
+  justify-content: center;
+  color: #a39a8e;
+  font-size: 32rpx;
+}
+
+.cell {
+  width: 100%;
+  height: 72rpx;
+  padding: 0 12rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.ph {
+  color: #c4bbb0;
+}
+
+.foot {
+  margin-top: 16rpx;
+  padding: 0 8rpx;
+  font-size: 22rpx;
+}
+
+.picker-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(42, 36, 28, 0.45);
+  display: flex;
+  align-items: flex-end;
+}
+
+.picker-sheet {
+  width: 100%;
+  max-height: 70vh;
+  background: var(--card);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 24rpx 28rpx calc(24rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picker-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.picker-done {
+  color: #2f6f6a;
+  font-size: 28rpx;
+  padding: 8rpx 4rpx;
+}
+
+.picker-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+}
+
+.picker-add {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.picker-input {
+  flex: 1;
+  height: 68rpx;
+  padding: 0 20rpx;
+  background: var(--bg);
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+.picker-add-btn {
+  flex-shrink: 0;
+  height: 68rpx;
+  padding: 0 22rpx;
+  border-radius: 12rpx;
+  background: #2f6f6a;
+  color: #fff;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+
+.add-plus {
+  font-size: 32rpx;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.picker-body {
+  margin-top: 20rpx;
+  max-height: 46vh;
+}
+
+.chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding-bottom: 12rpx;
+}
+
+.chip {
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(42, 36, 28, 0.06);
+  color: #5a5046;
+  font-size: 24rpx;
+}
+
+.chip.on {
+  background: rgba(47, 111, 106, 0.16);
+  color: #2f6f6a;
+  font-weight: 600;
+}

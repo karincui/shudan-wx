@@ -1,0 +1,96 @@
+<view class="page paper-mint page-with-tab" style="{{pageTheme}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title">最近</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <boot-loading wx:if="{{loading}}" text="整理最近阅读…" char="读" />
+
+  <view wx:elif="{{empty}}" class="empty-wrap">
+    <view class="empty-orb">
+      <text class="empty-orb-char">读</text>
+    </view>
+    <text class="empty-title">还没有阅读记录</text>
+    <text class="empty-desc">打开一本书后，会按时间出现在这里，方便接着读</text>
+    <view class="empty-btn" bindtap="goLibrary" hover-class="empty-btn-hover">去书单看看</view>
+  </view>
+
+  <view wx:else class="content">
+    <view class="section-kicker">接着看</view>
+    <view
+      class="hero"
+      data-id="{{hero.id}}"
+      data-txt="{{hero.hasTxt ? 1 : 0}}"
+      bindtap="openItem"
+      hover-class="hero-hover"
+    >
+      <view class="hero-glow"></view>
+      <view class="hero-cover">
+        <text class="hero-cover-char">{{hero.initial}}</text>
+      </view>
+      <view class="hero-body">
+        <view class="hero-main">
+          <text class="hero-badge">最近在读</text>
+          <text class="hero-title">{{hero.title}}</text>
+          <text class="hero-sub">
+            {{hero.author || '未知作者'}} · {{hero.timeLabel}}{{hero.pageLabel ? ' · ' + hero.pageLabel : ''}}{{hero.hasTxt ? ' · TXT' : ''}}
+          </text>
+        </view>
+        <view class="hero-cta">{{hero.cta}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{yesterdayList.length}}" class="section">
+      <view class="section-head">
+        <text class="section-title">昨天</text>
+        <text class="section-sub">{{yesterdayList.length}} 本</text>
+      </view>
+      <view
+        class="row"
+        wx:for="{{yesterdayList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-txt="{{item.hasTxt ? 1 : 0}}"
+        bindtap="openItem"
+        hover-class="row-hover"
+      >
+        <view class="row-cover">
+          <text class="row-cover-char">{{item.initial}}</text>
+        </view>
+        <view class="row-main">
+          <text class="row-title">{{item.title}}</text>
+          <text class="row-subline">{{item.author || '未知作者'}} · {{item.timeLabel}}{{item.pageLabel ? ' · ' + item.pageLabel : ''}}{{item.hasTxt ? ' · TXT' : ''}}</text>
+        </view>
+        <text class="row-cta">{{item.cta}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{earlierList.length}}" class="section">
+      <view class="section-head">
+        <text class="section-title">更早</text>
+        <text class="section-sub">{{earlierList.length}} 本</text>
+      </view>
+      <view
+        class="row"
+        wx:for="{{earlierList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-txt="{{item.hasTxt ? 1 : 0}}"
+        bindtap="openItem"
+        hover-class="row-hover"
+      >
+        <view class="row-cover">
+          <text class="row-cover-char">{{item.initial}}</text>
+        </view>
+        <view class="row-main">
+          <text class="row-title">{{item.title}}</text>
+          <text class="row-subline">{{item.author || '未知作者'}} · {{item.timeLabel}}{{item.pageLabel ? ' · ' + item.pageLabel : ''}}{{item.hasTxt ? ' · TXT' : ''}}</text>
+        </view>
+        <text class="row-cta">{{item.cta}}</text>
+      </view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

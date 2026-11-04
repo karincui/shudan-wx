@@ -1,0 +1,157 @@
+<view class="page" style="{{pageTheme}}">
+  <view class="field">
+    <text class="label">书名 *</text>
+    <input class="input tall" placeholder="必填" value="{{title}}" bindinput="onTitle" />
+  </view>
+
+  <view class="field">
+    <text class="label">作者</text>
+    <input class="input tall" placeholder="选填" value="{{author}}" bindinput="onAuthor" />
+  </view>
+
+  <view class="field">
+    <text class="label">简介</text>
+    <textarea
+      class="textarea"
+      placeholder="选填"
+      value="{{synopsis}}"
+      maxlength="4000"
+      auto-height="{{false}}"
+      bindinput="onSynopsis"
+    />
+  </view>
+
+  <view class="field">
+    <text class="label">短评</text>
+    <textarea
+      class="textarea short"
+      placeholder="一句话感想，选填"
+      value="{{review}}"
+      maxlength="500"
+      bindinput="onReview"
+    />
+  </view>
+
+  <view class="field row">
+    <text class="label">很想看</text>
+    <switch checked="{{wantToRead}}" color="#2f6f6a" bindchange="onWant" />
+  </view>
+
+  <view class="field row">
+    <text class="label">不喜欢</text>
+    <switch checked="{{disliked}}" color="#8a7f72" bindchange="onDislike" />
+  </view>
+
+  <view class="field">
+    <text class="label">评分</text>
+    <view class="stars">
+      <image
+        class="star-icon"
+        wx:for="{{starList}}"
+        wx:key="*this"
+        src="{{rating >= item ? '/images/icons/star-on.svg' : '/images/icons/star-off.svg'}}"
+        mode="aspectFit"
+        data-n="{{item}}"
+        bindtap="onStar"
+      />
+      <text class="muted tip">{{rating ? rating + ' 星' : '未评分'}}</text>
+    </view>
+  </view>
+
+  <view class="field">
+    <view class="label-row">
+      <text class="label">标签</text>
+      <text class="muted selected-count">已选 {{selectedCount}}</text>
+    </view>
+
+    <view class="read-seg">
+      <view class="read-item {{selectedMap['未读'] ? 'on unread' : ''}}" data-tag="未读" bindtap="toggleTag">
+        <image
+          class="read-ico"
+          src="{{selectedMap['未读'] ? '/images/icons/unread-white.svg' : '/images/icons/unread.svg'}}"
+          mode="aspectFit"
+        />
+        <text>未读</text>
+      </view>
+      <view class="read-item {{selectedMap['已读'] ? 'on read' : ''}}" data-tag="已读" bindtap="toggleTag">
+        <image
+          class="read-ico"
+          src="{{selectedMap['已读'] ? '/images/icons/read-white.svg' : '/images/icons/read.svg'}}"
+          mode="aspectFit"
+        />
+        <text>已读</text>
+      </view>
+    </view>
+
+    <view wx:if="{{selectedChips.length}}" class="selected-wrap">
+      <view
+        class="chip on"
+        wx:for="{{selectedChips}}"
+        wx:key="name"
+        style="background:{{item.bg}};color:{{item.fg}};"
+        data-tag="{{item.name}}"
+        bindtap="toggleTag"
+      >
+        <text>{{item.name}}</text>
+        <text class="chip-x">×</text>
+      </view>
+    </view>
+
+    <view class="tag-search-wrap">
+      <input
+        class="input tag-search"
+        placeholder="筛选标签"
+        value="{{tagQuery}}"
+        bindinput="onTagQuery"
+      />
+      <view wx:if="{{tagQuery}}" class="tag-search-clear" catchtap="clearTagQuery">×</view>
+    </view>
+
+    <view class="tag-pick">
+      <view
+        class="chip {{selectedMap[item.name] ? 'on' : ''}}"
+        wx:for="{{visibleTags}}"
+        wx:key="name"
+        style="background:{{selectedMap[item.name] ? item.bg : 'rgba(42,36,28,0.05)'}};color:{{selectedMap[item.name] ? item.fg : '#8a7f72'}};"
+        data-tag="{{item.name}}"
+        bindtap="toggleTag"
+      >{{item.name}}</view>
+      <view wx:if="{{!visibleTags.length}}" class="muted empty-tags">没有匹配标签</view>
+    </view>
+
+    <view class="tag-add-card">
+      <view class="tag-add-title">自定义标签</view>
+      <view class="tag-add-row">
+        <input
+          class="input tall flex"
+          placeholder="输入新标签，回车添加"
+          value="{{newTag}}"
+          confirm-type="done"
+          bindinput="onNewTag"
+          bindconfirm="addTag"
+        />
+        <view wx:if="{{newTag}}" class="add-clear" catchtap="clearNewTag">×</view>
+        <view class="add-tag-btn {{canAddTag && !addingTag ? '' : 'disabled'}}" bindtap="addTag">
+          <text wx:if="{{!addingTag}}" class="add-plus">+</text>
+          <text>{{addingTag ? '…' : '添加并选用'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="field">
+    <text class="label">附件（txt / 其它文件，选填）</text>
+    <view class="attach-row">
+      <button class="btn ghost sm" bindtap="pickAttach">选择文件</button>
+      <button wx:if="{{attachmentName || pendingName}}" class="btn ghost sm" bindtap="clearAttach">移除</button>
+    </view>
+    <text class="muted attach-status">{{attachStatus}}</text>
+  </view>
+
+  <view class="footer-spacer"></view>
+
+  <view class="footer">
+    <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存'}}</view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

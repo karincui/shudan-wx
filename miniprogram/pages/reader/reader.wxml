@@ -1,0 +1,123 @@
+<view class="reader {{theme}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px; background: {{navBg}};">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title" style="color: {{navTitleColor}};">{{novelTitle || '阅读'}}</text>
+      <view
+        class="settings-btn"
+        style="top: {{capsuleTop}}px; left: {{settingsLeft}}px; width: {{capsuleHeight}}px; height: {{capsuleHeight}}px;"
+        bindtap="openSettings"
+        hover-class="settings-btn-hover"
+        aria-label="阅读设置"
+      >
+        <image
+          class="settings-ico"
+          src="{{theme === 'night' ? '/images/icons/settings-light.svg' : '/images/icons/settings-line.svg'}}"
+          mode="aspectFit"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 按屏估算切页：每页约一屏正文；底部 spacer 方便滚动翻页触底 -->
+  <view
+    class="body-inner"
+    style="padding-top: {{statusBarHeight + navBarHeight}}px; padding-bottom: {{bodyBottomPad}}px;"
+  >
+    <view class="content" style="font-size:{{fontSizes[fontIndex]}}px;line-height:2;">{{text}}</view>
+    <view
+      wx:if="{{flipMode === 'scroll'}}"
+      class="page-spacer"
+      style="height: {{pageSpacerPx}}px;"
+    ></view>
+    <view wx:if="{{flipMode === 'scroll' && hasPager}}" class="scroll-tip">
+      {{page >= totalPages ? '已到最后一页' : '继续上滑翻下一页'}}
+    </view>
+  </view>
+
+  <!-- 点击翻页：左上上一页，右下下一页（固定在视口，不随正文滚走） -->
+  <view
+    wx:if="{{hasPager && flipMode === 'tap' && !settingsOpen}}"
+    class="tap-zone prev {{page <= 1 ? 'disabled' : ''}}"
+    style="top: {{statusBarHeight + navBarHeight}}px;"
+    catchtap="goPrev"
+  ></view>
+  <view
+    wx:if="{{hasPager && flipMode === 'tap' && !settingsOpen}}"
+    class="tap-zone next {{page >= totalPages ? 'disabled' : ''}}"
+    style="bottom: {{showProgress ? progressHeight : 0}}px;"
+    catchtap="goNext"
+  ></view>
+
+  <view wx:if="{{hasPager && showProgress}}" class="progress">
+    <text class="progress-label">{{page}} / {{totalPages}}</text>
+    <slider
+      class="progress-slider"
+      min="1"
+      max="{{totalPages}}"
+      step="1"
+      value="{{page}}"
+      activeColor="{{theme === 'night' ? '#666666' : '#1f6f5c'}}"
+      backgroundColor="{{theme === 'night' ? '#333333' : 'rgba(0,0,0,0.08)'}}"
+      block-size="18"
+      show-value="{{false}}"
+      bindchanging="onProgressChanging"
+      bindchange="onProgressChange"
+    />
+  </view>
+
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+
+  <!-- 阅读设置弹层 -->
+  <view wx:if="{{settingsOpen}}" class="settings-mask" catchtouchmove="noop" bindtap="closeSettings">
+    <view class="settings-sheet {{settingsShow ? 'show' : ''}}" catchtap="noop">
+      <view class="settings-handle"></view>
+      <view class="settings-title">阅读设置</view>
+
+      <view class="settings-block">
+        <view class="settings-label">字号</view>
+        <view class="chip-row">
+          <view
+            class="chip {{fontIndex === index ? 'on' : ''}}"
+            wx:for="{{fontSizes}}"
+            wx:key="*this"
+            data-index="{{index}}"
+            bindtap="onFontChip"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="settings-block">
+        <view class="settings-label">背景</view>
+        <view class="chip-row">
+          <view class="chip {{theme === 'parchment' ? 'on' : ''}}" data-theme="parchment" bindtap="setTheme">羊皮纸</view>
+          <view class="chip {{theme === 'eye' ? 'on' : ''}}" data-theme="eye" bindtap="setTheme">护眼</view>
+          <view class="chip {{theme === 'night' ? 'on' : ''}}" data-theme="night" bindtap="setTheme">夜间</view>
+        </view>
+      </view>
+
+      <view class="settings-block">
+        <view class="settings-label">翻页方式</view>
+        <view class="chip-row">
+          <view class="chip {{flipMode === 'tap' ? 'on' : ''}}" data-mode="tap" bindtap="setFlipMode">点击翻页</view>
+          <view class="chip {{flipMode === 'scroll' ? 'on' : ''}}" data-mode="scroll" bindtap="setFlipMode">滚动翻页</view>
+        </view>
+        <view class="settings-hint">
+          {{flipMode === 'tap' ? '按屏翻页：左上上一页，右下下一页' : '按屏翻页：滑到底下一页，滑到顶上一页'}}
+        </view>
+      </view>
+
+      <view class="settings-block">
+        <view class="settings-row">
+          <view class="settings-row-main">
+            <text class="settings-row-title">显示进度条</text>
+            <text class="settings-hint">可拖动跳转到对应页</text>
+          </view>
+          <switch checked="{{showProgress}}" color="#1f6f5c" bindchange="onProgressSwitch" />
+        </view>
+      </view>
+
+      <view class="settings-done" bindtap="closeSettings">完成</view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

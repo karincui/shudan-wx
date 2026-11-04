@@ -1,0 +1,149 @@
+.page.paper-mint {
+  --paper: #f6f4ef;
+  --card: #ffffff;
+  --line: #e7e3d9;
+  --ink: #24261f;
+  --muted: #8a8677;
+  --teal: #1f6f5c;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  box-sizing: border-box;
+}
+
+.content {
+  padding: 16rpx 28rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.tabs {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab {
+  flex: 1;
+  height: 64rpx;
+  border-radius: 999rpx;
+  background: rgba(42, 36, 28, 0.05);
+  color: var(--muted);
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab.on {
+  background: rgba(31, 111, 92, 0.12);
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.empty {
+  padding: 80rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22rpx;
+  padding: 22rpx;
+  box-sizing: border-box;
+  box-shadow: 0 6rpx 18rpx rgba(42, 36, 28, 0.05);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.card-time {
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.card-status {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  line-height: 1.3;
+}
+
+.card-status.open {
+  background: rgba(201, 133, 42, 0.14);
+  color: #c9852a;
+}
+
+.card-status.done {
+  background: rgba(31, 111, 92, 0.12);
+  color: #1f6f5c;
+}
+
+.card-content {
+  display: block;
+  font-size: 28rpx;
+  color: var(--ink);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.card-contact {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.card-acts {
+  margin-top: 18rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.act {
+  height: 56rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.act.primary {
+  background: linear-gradient(135deg, #1f6f5c 0%, #3fb6a0 100%);
+  color: #ffffff;
+}
+
+.act.ghost {
+  background: rgba(42, 36, 28, 0.06);
+  color: #5a5046;
+}

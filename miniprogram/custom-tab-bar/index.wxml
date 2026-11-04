@@ -1,0 +1,48 @@
+<view wx:if="{{show}}" class="tabbar-wrap" style="padding-bottom: {{safeBottom}}px;">
+  <view class="tabbar">
+    <view
+      class="tab-item {{selected === 0 ? 'on' : ''}}"
+      data-index="0"
+      data-path="/pages/library/library"
+      bindtap="onSwitch"
+    >
+      <image class="tab-ico" src="{{selected === 0 ? '/images/icons/tab-list-on.svg' : '/images/icons/tab-list.svg'}}" mode="aspectFit" />
+      <text class="tab-text">列表</text>
+    </view>
+
+    <view
+      class="tab-item {{selected === 1 ? 'on' : ''}}"
+      data-index="1"
+      data-path="/pages/recent/recent"
+      bindtap="onSwitch"
+    >
+      <image class="tab-ico" src="{{selected === 1 ? '/images/icons/tab-recent-on.svg' : '/images/icons/tab-recent.svg'}}" mode="aspectFit" />
+      <text class="tab-text">最近</text>
+    </view>
+
+    <view
+      class="tab-item {{selected === 2 ? 'on' : ''}}"
+      data-index="2"
+      data-path="/pages/import/import"
+      bindtap="onSwitch"
+    >
+      <image class="tab-ico" src="{{selected === 2 ? '/images/icons/tab-import-on.svg' : '/images/icons/tab-import.svg'}}" mode="aspectFit" />
+      <text class="tab-text">导入</text>
+    </view>
+
+    <view class="tab-item" data-key="random" bindtap="onRandom">
+      <image class="tab-ico" src="/images/icons/tab-dice.svg" mode="aspectFit" />
+      <text class="tab-text">随机</text>
+    </view>
+
+    <view
+      class="tab-item {{selected === 4 ? 'on' : ''}}"
+      data-index="4"
+      data-path="/pages/me/me"
+      bindtap="onSwitch"
+    >
+      <image class="tab-ico" src="{{selected === 4 ? '/images/icons/tab-me-on.svg' : '/images/icons/tab-me.svg'}}" mode="aspectFit" />
+      <text class="tab-text">我的</text>
+    </view>
+  </view>
+</view>

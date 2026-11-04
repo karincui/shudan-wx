@@ -1,0 +1,465 @@
+<view class="page page-with-tab" style="{{pageTheme}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title">我的书单</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <boot-loading wx:if="{{loading}}" text="{{loadingText || '正在加载书单'}}" char="书" />
+
+
+  <view class="toolbar">
+    <view class="search-wrap">
+      <image class="search-ico" src="/images/icons/search.svg" mode="aspectFit" />
+      <input
+        class="search"
+        placeholder="搜索书名 / 作者 / 简介 / 标签"
+        value="{{query}}"
+        confirm-type="search"
+        bindinput="onQueryInput"
+        bindconfirm="onSearch"
+      />
+      <view wx:if="{{query}}" class="search-clear" catchtap="clearQuery">×</view>
+    </view>
+
+    <view wx:if="{{!selectMode}}" class="add-btn" bindtap="goAdd" hover-class="add-btn-hover" aria-label="添加">+</view>
+  </view>
+
+  <view class="filter-bar">
+    <view class="seg">
+      <view class="seg-item {{readFilter === 'all' ? 'on' : ''}}" data-filter="all" bindtap="onFilter">
+        <text>全部</text>
+        <text class="seg-num">{{filterCounts.all}}</text>
+      </view>
+      <view class="seg-item {{readFilter === 'want' ? 'on' : ''}}" data-filter="want" bindtap="onFilter">
+        <image class="seg-ico" src="/images/icons/heart-on.svg" mode="aspectFit" />
+        <text>很想看</text>
+        <text class="seg-num">{{filterCounts.want}}</text>
+      </view>
+      <view class="seg-item {{readFilter === 'dislike' ? 'on' : ''}}" data-filter="dislike" bindtap="onFilter">
+        <image class="seg-ico" src="/images/icons/dislike-on.svg" mode="aspectFit" />
+        <text>不喜欢</text>
+        <text class="seg-num">{{filterCounts.dislike}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tags-row">
+    <view class="tags-panel {{filterTags.length ? 'has-sel' : ''}}">
+      <view class="tags-toolbar">
+        <view class="tags-toggle" bindtap="openTagSheet" hover-class="tags-toggle-hover">
+          <image class="tags-toggle-ico" src="/images/icons/tags-mint.svg" mode="aspectFit" />
+          <text class="tags-label">标签筛选</text>
+          <text wx:if="{{filterTags.length}}" class="tags-count">{{filterTags.length}}</text>
+          <text class="tags-caret">▾</text>
+        </view>
+        <view class="tags-toolbar-right">
+          <text
+            wx:if="{{filterTags.length}}"
+            class="tags-clear"
+            catchtap="clearFilterTags"
+          >清除</text>
+          <view
+            class="rating-entry {{minRating ? 'on' : ''}}"
+            catchtap="openRatingSheet"
+            hover-class="rating-entry-hover"
+          >
+            <image class="rating-entry-ico" src="/images/icons/star-on.svg" mode="aspectFit" />
+            <text class="rating-entry-text">{{ratingLabel}}</text>
+          </view>
+          <view class="sort-entry" catchtap="openSortSheet" hover-class="sort-entry-hover">
+            <image class="sort-ico" src="/images/icons/sort.svg" mode="aspectFit" />
+            <text class="sort-text">{{sortLabel}}</text>
+          </view>
+        </view>
+      </view>
+
+      <scroll-view wx:if="{{filterTags.length}}" class="tags-selected" scroll-x enable-flex>
+        <view class="tags-selected-inner">
+          <view
+            class="sel-chip"
+            wx:for="{{selectedTagItems}}"
+            wx:key="name"
+            style="background:{{item.bg}};color:{{item.fg}};"
+            data-tag="{{item.name}}"
+            catchtap="toggleFilterTag"
+          >
+            <text>{{item.name}}</text>
+            <text class="sel-x">×</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view
+      class="tool-btn select-side-btn {{selectMode ? 'on' : ''}}"
+      bindtap="toggleSelectMode"
+      hover-class="tool-btn-hover"
+    >{{selectMode ? '完成' : '多选'}}</view>
+  </view>
+
+
+  <view wx:if="{{error}}" class="error-box">
+    <text>{{error}}</text>
+    <button class="btn ghost sm" bindtap="onRetry">重试</button>
+  </view>
+
+  <view wx:if="{{!loading && !error && !novels.length}}" class="empty">
+    <text class="muted">还没有书。可点「导入」把电脑备份导进来</text>
+  </view>
+
+  <view wx:elif="{{novels.length}}" class="list list-stack">
+    <view class="swipe-item {{swipeOpenId === item.id ? 'is-open' : ''}} {{selectedMap[item.id] ? 'is-selected' : ''}}" wx:for="{{novels}}" wx:key="id">
+      <view wx:if="{{!selectMode}}" class="swipe-actions">
+        <view class="swipe-btn pin" data-id="{{item.id}}" data-pinned="{{item.pinned}}" catchtap="togglePin">
+          <image
+            class="swipe-ico"
+            src="{{item.pinned ? '/images/icons/unpin-white.svg' : '/images/icons/pin-white.svg'}}"
+            mode="aspectFit"
+          />
+          <text>{{item.pinned ? '取消' : '置顶'}}</text>
+        </view>
+        <view class="swipe-btn edit" data-id="{{item.id}}" catchtap="goEditFromList">
+          <image class="swipe-ico" src="/images/icons/edit-white.svg" mode="aspectFit" />
+          <text>编辑</text>
+        </view>
+        <view class="swipe-btn del" data-id="{{item.id}}" catchtap="onDeleteFromList">
+          <image class="swipe-ico" src="/images/icons/delete-white.svg" mode="aspectFit" />
+          <text>删除</text>
+        </view>
+      </view>
+      <view
+        class="swipe-front {{selectMode ? 'is-selecting' : ''}} {{item.isRead ? 'is-read' : ''}} {{item.wantToRead ? 'is-want' : ''}} {{item.disliked ? 'is-dislike' : ''}} {{item.pinned ? 'is-pinned' : ''}} {{swipeDragging && swipeOpenId === item.id ? 'dragging' : ''}}"
+        style="transform:translateX({{!selectMode && swipeOpenId === item.id ? swipeX : 0}}px);"
+      >
+        <view wx:if="{{item.pinned}}" class="status-bar pin"></view>
+        <view wx:elif="{{item.wantToRead}}" class="status-bar want"></view>
+        <view wx:elif="{{item.disliked}}" class="status-bar dislike"></view>
+        <view wx:if="{{item.pinned}}" class="pin-flag">置顶</view>
+        <view
+          class="row swipe-content"
+          data-id="{{item.id}}"
+          bindtouchstart="onSwipeStart"
+          bindtouchmove="onSwipeMove"
+          bindtouchend="onSwipeEnd"
+          bindtouchcancel="onSwipeEnd"
+          bindtap="goDetail"
+          hover-class="row-hover"
+        >
+          <view
+            wx:if="{{selectMode}}"
+            class="select-check {{selectedMap[item.id] ? 'on' : ''}}"
+          >{{selectedMap[item.id] ? '✓' : ''}}</view>
+
+          <view class="row-main">
+            <view class="row-head">
+              <view class="row-title">
+                <text class="name">{{item.title}}</text>
+                <text wx:if="{{item.author}}" class="author">{{item.author}}</text>
+                <view wx:if="{{item.hasTxt}}" class="txt-badge">TXT</view>
+              </view>
+              <view class="mark-btns">
+                <view
+                  class="want-btn {{item.wantToRead ? 'on' : ''}}"
+                  catchtap="toggleWant"
+                  data-id="{{item.id}}"
+                  data-want="{{item.wantToRead}}"
+                >
+                  <image
+                    class="want-ico"
+                    src="{{item.wantToRead ? '/images/icons/heart-on.svg' : '/images/icons/heart-off.svg'}}"
+                    mode="aspectFit"
+                  />
+                </view>
+                <view
+                  class="want-btn dislike {{item.disliked ? 'on' : ''}}"
+                  catchtap="toggleDislike"
+                  data-id="{{item.id}}"
+                  data-dislike="{{item.disliked}}"
+                >
+                  <image
+                    class="want-ico"
+                    src="{{item.disliked ? '/images/icons/dislike-on.svg' : '/images/icons/dislike-off.svg'}}"
+                    mode="aspectFit"
+                  />
+                </view>
+              </view>
+            </view>
+
+            <view wx:if="{{item.synopsis}}" class="row-synopsis">{{item.synopsis}}</view>
+
+            <view class="row-foot">
+              <view class="row-sub">
+                <view
+                  class="read-status {{item.isRead ? 'read' : 'unread'}}"
+                  catchtap="toggleRead"
+                  catchtouchstart="onCtrlTouchStart"
+                  data-id="{{item.id}}"
+                  data-read="{{item.isRead}}"
+                >
+                  <image
+                    wx:if="{{item.isRead}}"
+                    class="read-ico"
+                    src="/images/icons/read.svg"
+                    mode="aspectFit"
+                  />
+                  <text>{{item.readLabel}}</text>
+                </view>
+                <text
+                  class="tag"
+                  wx:for="{{item.displayTags}}"
+                  wx:for-item="tag"
+                  wx:key="*this"
+                  style="background:{{tag.bg}};color:{{tag.fg}};"
+                >{{tag.name}}</text>
+              </view>
+              <view class="stars-row">
+                <image
+                  class="star-icon"
+                  wx:for="{{starList}}"
+                  wx:for-item="s"
+                  wx:key="*this"
+                  src="{{item.rating >= s ? '/images/icons/star-on.svg' : '/images/icons/star-off.svg'}}"
+                  mode="aspectFit"
+                  data-id="{{item.id}}"
+                  data-n="{{s}}"
+                  catchtap="onRate"
+                />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+
+
+  <view wx:if="{{totalPages > 1}}" class="pager">
+    <view class="pager-btn {{page <= 1 ? 'disabled' : ''}}" bindtap="goFirstPage">首页</view>
+    <view class="pager-btn {{page <= 1 ? 'disabled' : ''}}" bindtap="goPrevPage">上一页</view>
+    <text class="pager-info">{{page}} / {{totalPages}}</text>
+    <view class="pager-btn {{page >= totalPages ? 'disabled' : ''}}" bindtap="goNextPage">下一页</view>
+  </view>
+
+  <view wx:if="{{randomPoolOpen}}" class="pool-mask" catchtouchmove="noop" bindtap="closeRandomPoolSheet">
+    <view class="pool-sheet" catchtap="noop">
+      <view class="pool-title">从哪里抽？</view>
+      <view class="pool-item {{randomPool === 'unread' ? 'on' : ''}}" data-pool="unread" bindtap="onPickRandomPool">
+        <text class="pool-name">未读里抽一本</text>
+        <text class="pool-desc">今晚读点新的</text>
+      </view>
+      <view class="pool-item {{randomPool === 'want' ? 'on' : ''}}" data-pool="want" bindtap="onPickRandomPool">
+        <text class="pool-name">很想看里抽</text>
+        <text class="pool-desc">心愿单里挑惊喜</text>
+      </view>
+      <view class="pool-item {{randomPool === 'filter' ? 'on' : ''}}" data-pool="filter" bindtap="onPickRandomPool">
+        <text class="pool-name">按当前筛选抽</text>
+        <text class="pool-desc">尊重搜索 / 标签 / 评分</text>
+      </view>
+      <view class="pool-cancel" bindtap="closeRandomPoolSheet">取消</view>
+    </view>
+  </view>
+
+  <view wx:if="{{randomOpen}}" class="draw-mask" catchtouchmove="noop" bindtap="closeRandom">
+    <view class="draw-sheet {{randomSheetShow ? 'show' : ''}}" catchtap="noop">
+      <view class="draw-close" bindtap="closeRandom" hover-class="draw-close-hover">×</view>
+      <view class="draw-kicker">✨ 今日之书 ✨</view>
+
+
+      <view class="draw-stage">
+        <view
+          class="mini-card"
+          wx:for="{{drawCards}}"
+          wx:key="id"
+          style="{{item.style}}"
+        >
+          <view class="mini-inner">
+            <text class="mini-char">{{item.char}}</text>
+          </view>
+        </view>
+
+        <view
+          class="reveal-wrap {{randomPhase === 'reveal' || randomPhase === 'done' ? 'show' : ''}} {{randomFlipped ? 'flipped' : ''}}"
+        >
+          <view class="finalFront" wx:if="{{randomNovel}}" catchtap="onFlipReveal">
+            <view class="finalFront-title">{{randomNovel.title}}</view>
+            <view class="finalFront-sub">点我翻面</view>
+          </view>
+          <view class="finalBack" wx:if="{{randomNovel}}" catchtap="noop">
+            <view class="finalBack-title">{{randomNovel.title}}</view>
+            <view wx:if="{{randomNovel.author}}" class="finalBack-author">{{randomNovel.author}}</view>
+            <view class="finalBack-tags" wx:if="{{randomTagList.length}}">
+              <text class="finalBack-tag" wx:for="{{randomTagList}}" wx:key="*this">{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view
+        wx:if="{{(randomPhase === 'reveal' || randomPhase === 'done') && !randomFlipped}}"
+        class="draw-flip-btn"
+        catchtap="onFlipReveal"
+      >点卡片翻面</view>
+
+      <view class="draw-hint">{{randomHint}}</view>
+
+
+      <view class="draw-actions {{randomPhase === 'reveal' || randomPhase === 'done' ? 'show' : ''}}">
+        <view class="draw-btn ghost {{randomBusy ? 'disabled' : ''}}" bindtap="onRandomAgain">再抽一次</view>
+        <view class="draw-btn primary {{randomBusy ? 'disabled' : ''}}" bindtap="goRandomDetail">看详情</view>
+      </view>
+
+    </view>
+  </view>
+
+
+  <view wx:if="{{ratingSheetOpen}}" class="sort-mask" catchtouchmove="noop" bindtap="closeRatingSheet">
+    <view class="sort-sheet {{ratingSheetShow ? 'show' : ''}}" catchtap="noop">
+      <view class="sort-sheet-head">
+        <text class="sort-sheet-title">评分筛选</text>
+        <text class="sort-sheet-reset" catchtap="resetRatingDraft">不限</text>
+      </view>
+      <view class="sort-options">
+        <view
+          class="sort-option {{ratingDraft === item.value ? 'on' : ''}}"
+          wx:for="{{ratingOptions}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="onRatingDraft"
+        >
+          <text class="sort-option-label">{{item.label}}</text>
+          <image
+            class="sort-check {{ratingDraft === item.value ? 'show' : ''}}"
+            src="/images/icons/check-mint.svg"
+            mode="aspectFit"
+          />
+        </view>
+      </view>
+      <view class="sort-sheet-actions">
+        <view class="sort-act cancel" bindtap="closeRatingSheet">取消</view>
+        <view class="sort-act confirm" bindtap="confirmRating">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{sortSheetOpen}}" class="sort-mask" catchtouchmove="noop" bindtap="closeSortSheet">
+    <view class="sort-sheet {{sortSheetShow ? 'show' : ''}}" catchtap="noop">
+      <view class="sort-sheet-head">
+        <text class="sort-sheet-title">排序方式</text>
+        <text class="sort-sheet-reset" catchtap="resetSortDraft">重置</text>
+      </view>
+      <view class="sort-options">
+        <view
+          class="sort-option {{sortDraft === item.key ? 'on' : ''}}"
+          wx:for="{{sortOptions}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="onSortDraft"
+        >
+          <text class="sort-option-label">{{item.label}}</text>
+          <image
+            class="sort-check {{sortDraft === item.key ? 'show' : ''}}"
+            src="/images/icons/check-mint.svg"
+            mode="aspectFit"
+          />
+        </view>
+      </view>
+      <view class="sort-sheet-actions">
+        <view class="sort-act cancel" bindtap="closeSortSheet">取消</view>
+        <view class="sort-act confirm" bindtap="confirmSort">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{tagSheetOpen}}" class="tag-mask" catchtouchmove="noop" catchtap="closeTagSheet">
+    <view class="tag-sheet {{tagSheetShow ? 'show' : ''}}" catchtap="noop">
+      <view class="tag-sheet-head">
+        <text class="tag-sheet-title">标签筛选</text>
+        <text class="tag-sheet-close" catchtap="closeTagSheet">关闭</text>
+      </view>
+
+      <view wx:if="{{tagDraftItems.length}}" class="tag-sheet-selected">
+        <scroll-view class="tag-sheet-selected-scroll" scroll-x enable-flex>
+          <view class="tag-sheet-selected-inner">
+            <view
+              class="sel-chip"
+              wx:for="{{tagDraftItems}}"
+              wx:key="name"
+              style="background:{{item.bg}};color:{{item.fg}};"
+              data-tag="{{item.name}}"
+              catchtap="toggleTagDraft"
+            >
+              <text>{{item.name}}</text>
+              <text class="sel-x">×</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      <view wx:else class="tag-sheet-hint">点选标签，需同时包含所选标签才会显示</view>
+
+      <view class="tag-sheet-body-wrap">
+        <scroll-view class="tag-sheet-body" scroll-y>
+          <view wx:if="{{!tagItems.length}}" class="tag-pick-empty">暂无可用标签</view>
+          <view wx:else class="tag-pick">
+            <view
+              class="tag-chip {{tagDraftMap[item.name] ? 'on' : ''}}"
+              wx:for="{{tagItems}}"
+              wx:key="name"
+              data-tag="{{item.name}}"
+              style="background:{{tagDraftMap[item.name] ? item.bg : 'rgba(42,36,28,0.05)'}};color:{{tagDraftMap[item.name] ? item.fg : '#8a7f72'}};"
+              bindtap="toggleTagDraft"
+            >{{item.name}}</view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="tag-sheet-actions">
+        <view class="tag-act ghost" catchtap="clearTagDraft">清空</view>
+        <view class="tag-act primary" catchtap="confirmTagSheet">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{selectMode}}" class="batch-bar">
+    <text class="batch-count">已选 {{selectedCount}}</text>
+    <view class="batch-actions">
+      <view class="batch-btn" bindtap="onBatchMarkRead">已读</view>
+      <view class="batch-btn" bindtap="openBatchTagSheet">加标签</view>
+      <view class="batch-btn danger" bindtap="batchMarkDislike">不喜欢</view>
+      <view class="batch-btn ghost" bindtap="exitSelectMode">取消</view>
+    </view>
+  </view>
+
+  <view wx:if="{{batchTagSheetOpen}}" class="tag-mask" catchtouchmove="noop" bindtap="closeBatchTagSheet">
+    <view class="tag-sheet {{batchTagSheetShow ? 'show' : ''}}" catchtap="noop">
+      <view class="tag-sheet-head">
+        <text class="tag-sheet-title">批量加标签</text>
+        <text class="tag-sheet-close" catchtap="closeBatchTagSheet">关闭</text>
+      </view>
+      <view class="tag-sheet-hint">选中的标签会加到已选书上</view>
+      <view class="tag-sheet-body-wrap">
+        <scroll-view class="tag-sheet-body" scroll-y>
+          <view wx:if="{{!tagItems.length}}" class="tag-pick-empty">暂无可用标签</view>
+          <view wx:else class="tag-pick">
+            <view
+              class="tag-chip {{batchTagDraftMap[item.name] ? 'on' : ''}}"
+              wx:for="{{tagItems}}"
+              wx:key="name"
+              data-tag="{{item.name}}"
+              style="background:{{batchTagDraftMap[item.name] ? item.bg : 'rgba(42,36,28,0.05)'}};color:{{batchTagDraftMap[item.name] ? item.fg : '#8a7f72'}};"
+              bindtap="toggleBatchTagDraft"
+            >{{item.name}}</view>
+          </view>
+        </scroll-view>
+      </view>
+      <view class="tag-sheet-actions">
+        <view class="tag-act ghost" catchtap="closeBatchTagSheet">取消</view>
+        <view class="tag-act primary" catchtap="confirmBatchTags">添加</view>
+      </view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>
+

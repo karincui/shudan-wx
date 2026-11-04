@@ -1,0 +1,12 @@
+<view wx:if="{{visible}}" class="mint-toast {{type === 'loading' ? 'is-loading' : ''}}" catchtouchmove="noop">
+  <view wx:if="{{type === 'loading' && mask}}" class="mint-toast-mask"></view>
+  <view class="mint-toast-card {{type}}">
+    <view wx:if="{{type === 'success'}}" class="mint-toast-check">✓</view>
+    <view wx:elif="{{type === 'loading'}}" class="mint-toast-spin">
+      <view class="mint-toast-ring"></view>
+      <view class="mint-toast-core"></view>
+    </view>
+    <text class="mint-toast-title">{{title}}</text>
+    <text wx:if="{{sub}}" class="mint-toast-sub">{{sub}}</text>
+  </view>
+</view>

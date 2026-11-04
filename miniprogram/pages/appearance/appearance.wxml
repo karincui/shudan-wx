@@ -1,0 +1,98 @@
+<view class="page" style="{{pageTheme}}">
+  <view class="card">
+    <view class="title">主题模式</view>
+    <view class="mode-row">
+      <view class="mode-item {{mode === 'day' ? 'on' : ''}}" data-mode="day" bindtap="onMode">
+        <view class="mode-preview day"></view>
+        <text>白天模式</text>
+      </view>
+      <view class="mode-item {{mode === 'night' ? 'on' : ''}}" data-mode="night" bindtap="onMode">
+        <view class="mode-preview night"></view>
+        <text>黑夜模式</text>
+      </view>
+      <view class="mode-item {{mode === 'custom' ? 'on' : ''}}" data-mode="custom" bindtap="onMode">
+        <view class="mode-preview custom" style="{{customPreviewStyle}}"></view>
+        <text>自定义</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card preview-card" style="{{previewStyle}}">
+    <view class="preview-inner">
+      <view class="preview-label">预览效果</view>
+      <view class="preview-title">示例书名 · 作者</view>
+      <view class="preview-body">这里是简介和正文颜色示意。可换背景色、字体色，或自选背景图。</view>
+      <view class="preview-chip" style="background:{{card}};color:{{ink}};">标签示意</view>
+    </view>
+  </view>
+
+  <view wx:if="{{mode === 'custom'}}" class="card">
+    <view class="title">背景图片</view>
+    <view class="hint muted">从相册选图后可裁剪，保存后作为全局背景</view>
+    <view class="bg-actions">
+      <view class="bg-btn" bindtap="onPickBgImage">选择并裁剪</view>
+      <view wx:if="{{bgImage || bgImageFileID}}" class="bg-btn ghost" bindtap="onClearBgImage">清除图片</view>
+    </view>
+    <image wx:if="{{bgImage}}" class="bg-thumb" src="{{bgImage}}" mode="aspectFill" />
+
+    <view wx:if="{{bgImage || bgImageFileID}}" class="opacity-block">
+      <view class="opacity-head">
+        <text class="title opacity-title">背景图透明度</text>
+        <text class="opacity-val">{{bgImageOpacity}}%</text>
+      </view>
+      <view class="hint muted">数值越低，背景图越淡，底色越明显</view>
+      <slider
+        class="opacity-slider"
+        min="10"
+        max="100"
+        step="1"
+        value="{{bgImageOpacity}}"
+        activeColor="#1f6f5c"
+        backgroundColor="#e7e3d9"
+        block-size="20"
+        bindchanging="onBgOpacityChanging"
+        bindchange="onBgOpacityChange"
+      />
+    </view>
+
+    <view class="title gap">背景色{{bgImage ? '（图片半透明时的底色）' : ''}}</view>
+    <view class="swatches">
+      <view
+        class="swatch {{!bgImage && bg === item ? 'on' : ''}}"
+        wx:for="{{bgSwatches}}"
+        wx:key="*this"
+        style="background:{{item}};"
+        data-type="bg"
+        data-color="{{item}}"
+        bindtap="onSwatch"
+      ></view>
+    </view>
+    <view class="hex-row">
+      <text class="hex-label muted">色值</text>
+      <input class="hex-input" value="{{bgInput}}" bindinput="onBgInput" bindblur="onBgConfirm" confirm-type="done" bindconfirm="onBgConfirm" />
+    </view>
+
+    <view class="title gap">字体颜色</view>
+    <view class="swatches">
+      <view
+        class="swatch {{ink === item ? 'on' : ''}}"
+        wx:for="{{inkSwatches}}"
+        wx:key="*this"
+        style="background:{{item}};"
+        data-type="ink"
+        data-color="{{item}}"
+        bindtap="onSwatch"
+      ></view>
+    </view>
+    <view class="hex-row">
+      <text class="hex-label muted">色值</text>
+      <input class="hex-input" value="{{inkInput}}" bindinput="onInkInput" bindblur="onInkConfirm" confirm-type="done" bindconfirm="onInkConfirm" />
+    </view>
+  </view>
+
+  <view class="actions">
+    <view class="act-btn ghost" bindtap="onResetDay">恢复默认设置</view>
+    <view class="act-btn primary {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存并应用'}}</view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

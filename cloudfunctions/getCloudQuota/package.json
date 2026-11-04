@@ -1,0 +1,10 @@
+{
+  "name": "getCloudQuota",
+  "version": "1.0.0",
+  "description": "查询云开发资源用量",
+  "main": "index.js",
+  "dependencies": {
+    "tencentcloud-sdk-nodejs": "^4.1.0",
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/library/library",
+    "pages/recent/recent",
+    "pages/import/import",
+    "pages/me/me",
+    "pages/tags/tags",
+    "pages/edit/edit",
+    "pages/detail/detail",
+    "pages/reader/reader",
+    "pages/table-import/table-import",
+    "pages/appearance/appearance",
+    "pages/feedback-admin/feedback-admin"
+  ],
+  "window": {
+    "backgroundColor": "#f6f4ef",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#f6f4ef",
+
+    "navigationBarTitleText": "书单",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#8a8a8a",
+    "selectedColor": "#2d5e4d",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/library/library",
+        "text": "列表"
+      },
+      {
+        "pagePath": "pages/recent/recent",
+        "text": "最近"
+      },
+      {
+        "pagePath": "pages/import/import",
+        "text": "导入"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "mint-toast": "/components/mint-toast/mint-toast"
+  }
+}

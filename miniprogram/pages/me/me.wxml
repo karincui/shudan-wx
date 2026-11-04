@@ -1,0 +1,340 @@
+<view class="page paper-mint page-with-tab {{darkMode ? 'is-dark' : ''}}" style="{{pageTheme}}">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px; padding-right: {{capsulePadRight}}px;">
+      <text class="nav-title" bindlongpress="onTitleLongPress">我的</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <view class="content">
+    <view class="wash"></view>
+
+    <view class="overview">
+      <view class="overview-main">
+        <text class="overview-kicker">书架概览</text>
+        <view class="overview-hero">
+          <text class="overview-num">{{stats.all}}</text>
+          <text class="overview-unit">本藏书</text>
+        </view>
+        <view class="overview-progress">
+          <view class="overview-progress-top">
+            <text class="overview-progress-label">已读进度</text>
+            <text class="overview-progress-pct">{{stats.readPct}}%</text>
+          </view>
+          <view class="overview-track">
+            <view class="overview-fill" style="width: {{stats.readPct}}%;"></view>
+          </view>
+        </view>
+      </view>
+      <view class="overview-stack" aria-hidden="true">
+        <view class="stack-book b1"></view>
+        <view class="stack-book b2"></view>
+        <view class="stack-book b3"></view>
+      </view>
+    </view>
+
+    <view class="metrics">
+      <view class="metric">
+        <text class="metric-num">{{stats.read}}</text>
+        <text class="metric-label">已读</text>
+      </view>
+      <view class="metric">
+        <text class="metric-num">{{stats.unread}}</text>
+        <text class="metric-label">未读</text>
+      </view>
+      <view class="metric">
+        <text class="metric-num">{{stats.want}}</text>
+        <text class="metric-label">很想看</text>
+      </view>
+      <view class="metric">
+        <text class="metric-num">{{stats.dislike}}</text>
+        <text class="metric-label">不喜欢</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">外观与整理</text>
+      <view class="menu">
+        <view class="menu-item" bindtap="goAppearance" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-mint">
+            <image class="menu-ico" src="/images/icons/appearance.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">个性化外观</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="menu-item" bindtap="goTags" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-mint">
+            <image class="menu-ico" src="/images/icons/tags-mint.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">标签管理</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="menu-item menu-item-switch">
+          <view class="menu-ico-wrap tone-night">
+            <image
+              class="menu-ico"
+              src="{{darkMode ? '/images/icons/moon-light.svg' : '/images/icons/moon.svg'}}"
+              mode="aspectFit"
+            />
+          </view>
+          <text class="menu-label">深色模式</text>
+          <view
+            class="mint-switch {{darkMode ? 'on' : ''}}"
+            catchtap="onToggleDark"
+            aria-role="switch"
+            aria-checked="{{darkMode}}"
+          >
+            <view class="mint-switch-knob"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">数据备份</text>
+      <view class="menu">
+        <view class="menu-item" bindtap="openExport" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-amber">
+            <image class="menu-ico" src="/images/icons/export-mint.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">导出备份</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="menu-item" bindtap="openRestore" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-mint">
+            <image class="menu-ico" src="/images/icons/import-backup.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">从备份恢复</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">帮助与云端</text>
+      <view class="menu">
+        <view class="menu-item" bindtap="openFeedback" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-mint">
+            <image class="menu-ico" src="/images/icons/question.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">问题反馈</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goFeedbackAdmin" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-amber">
+            <image class="menu-ico" src="/images/icons/settings-line.svg" mode="aspectFit" />
+          </view>
+          <view class="menu-label-wrap">
+            <text class="menu-label">反馈管理</text>
+            <view wx:if="{{feedbackBadge}}" class="menu-dot"></view>
+          </view>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="menu-item" bindtap="openCloudQuota" hover-class="menu-item-hover">
+          <view class="menu-ico-wrap tone-mint">
+            <image class="menu-ico" src="/images/icons/file-mint.svg" mode="aspectFit" />
+          </view>
+          <text class="menu-label">云服务用量</text>
+          <image
+            class="menu-arrow"
+            src="{{darkMode ? '/images/icons/chevron-right-light.svg' : '/images/icons/chevron-right.svg'}}"
+            mode="aspectFit"
+          />
+        </view>
+      </view>
+    </view>
+
+    <text class="page-foot">纸墨书架 · 云端同步</text>
+  </view>
+
+  <view wx:if="{{feedbackOpen}}" class="export-mask" catchtouchmove="noop" catchtap="closeFeedback">
+    <view class="export-sheet feedback-sheet {{feedbackShow ? 'show' : ''}}" catchtap="noop">
+      <view class="export-head">
+        <text class="export-title">问题反馈</text>
+        <view class="quota-icon-btn" catchtap="closeFeedback" hover-class="quota-icon-btn-hover">
+          <image class="quota-icon" src="/images/icons/close.svg" mode="aspectFit" />
+        </view>
+      </view>
+
+      <view class="feedback-body">
+        <text class="feedback-tip">说说想改进的地方、遇到的问题或新功能想法</text>
+        <textarea
+          class="feedback-textarea"
+          placeholder="例如：希望支持… / 某页打开很慢…"
+          placeholder-class="feedback-ph"
+          maxlength="2000"
+          value="{{feedbackContent}}"
+          bindinput="onFeedbackContent"
+          show-confirm-bar="{{false}}"
+        />
+        <input
+          class="feedback-contact"
+          placeholder="选填：微信号 / 邮箱，方便联系你"
+          placeholder-class="feedback-ph"
+          maxlength="80"
+          value="{{feedbackContact}}"
+          bindinput="onFeedbackContact"
+        />
+      </view>
+
+      <view class="export-actions">
+        <view class="export-btn ghost" catchtap="closeFeedback">取消</view>
+        <view
+          class="export-btn primary {{feedbackCanSubmit && !feedbackBusy ? '' : 'disabled'}}"
+          catchtap="submitFeedback"
+        >
+          {{feedbackBusy ? '提交中…' : '提交'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{cloudQuota.open}}" class="export-mask" catchtouchmove="noop" catchtap="closeCloudQuota">
+    <view class="export-sheet quota-sheet {{cloudQuota.show ? 'show' : ''}}" catchtap="noop">
+      <view class="export-head">
+        <text class="export-title">云服务用量</text>
+        <view class="quota-head-actions">
+          <view
+            class="quota-icon-btn {{cloudQuota.loading ? 'disabled' : ''}}"
+            catchtap="refreshCloudQuota"
+            hover-class="quota-icon-btn-hover"
+          >
+            <image class="quota-icon" src="/images/icons/refresh-mint.svg" mode="aspectFit" />
+          </view>
+          <view class="quota-icon-btn" catchtap="closeCloudQuota" hover-class="quota-icon-btn-hover">
+            <image class="quota-icon" src="/images/icons/close.svg" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+
+      <view class="quota-sheet-body">
+        <view wx:if="{{cloudQuota.loading}}" class="quota-loading">
+          <view class="quota-cloud">
+            <view class="quota-cloud-puff p1"></view>
+            <view class="quota-cloud-puff p2"></view>
+            <view class="quota-cloud-puff p3"></view>
+            <view class="quota-cloud-scan"></view>
+          </view>
+          <view class="quota-meters">
+            <view class="quota-meter">
+              <text class="quota-meter-label">存储</text>
+              <view class="quota-meter-track">
+                <view class="quota-meter-fill m1"></view>
+              </view>
+            </view>
+            <view class="quota-meter">
+              <text class="quota-meter-label">数据库</text>
+              <view class="quota-meter-track">
+                <view class="quota-meter-fill m2"></view>
+              </view>
+            </view>
+            <view class="quota-meter">
+              <text class="quota-meter-label">流量</text>
+              <view class="quota-meter-track">
+                <view class="quota-meter-fill m3"></view>
+              </view>
+            </view>
+          </view>
+          <text class="quota-loading-text">正在查询云服务用量…</text>
+        </view>
+        <block wx:else>
+          <view class="quota-sheet-meta">
+            <text class="quota-source">{{cloudQuota.source === 'quota' ? '官方配额' : (cloudQuota.source === 'estimate' ? '书架估算' : '查询结果')}}</text>
+          </view>
+          <scroll-view class="quota-sheet-scroll" scroll-y>
+            <view wx:if="{{!cloudQuota.items.length}}" class="quota-empty">
+              <text class="quota-tip">{{cloudQuota.tip}}</text>
+            </view>
+            <view wx:else class="quota-list">
+              <view class="quota-row" wx:for="{{cloudQuota.items}}" wx:key="key">
+                <view class="quota-row-top">
+                  <text class="quota-label">{{item.label}}</text>
+                  <text class="quota-remain">剩余 {{item.remainText}}</text>
+                </view>
+                <view class="quota-bar">
+                  <view class="quota-bar-fill {{item.percent >= 85 ? 'warn' : ''}}" style="width: {{item.percent}}%;"></view>
+                </view>
+                <text class="quota-detail">{{item.detail}}</text>
+              </view>
+              <text class="quota-tip">{{cloudQuota.tip}}</text>
+            </view>
+          </scroll-view>
+        </block>
+      </view>
+
+      <view class="export-actions">
+        <view class="export-btn primary" catchtap="closeCloudQuota">知道了</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{exportOpen}}" class="export-mask" catchtouchmove="noop" catchtap="closeExport">
+    <view class="export-sheet {{exportShow ? 'show' : ''}}" catchtap="noop">
+      <view class="export-head">
+        <text class="export-title">导出备份</text>
+        <view class="quota-icon-btn" catchtap="closeExport" hover-class="quota-icon-btn-hover">
+          <image class="quota-icon" src="/images/icons/close.svg" mode="aspectFit" />
+        </view>
+      </view>
+
+      <view wx:if="{{exportLoading}}" class="export-loading">
+        <view class="export-pack">
+          <view class="export-sheet-stack s1"></view>
+          <view class="export-sheet-stack s2"></view>
+          <view class="export-doc">
+            <view class="export-doc-line l1"></view>
+            <view class="export-doc-line l2"></view>
+            <view class="export-doc-line l3"></view>
+            <view class="export-doc-line l4"></view>
+          </view>
+          <view class="export-arrow"></view>
+          <view class="export-file">
+            <text class="export-file-ext">MD</text>
+          </view>
+        </view>
+        <text class="export-loading-text">正在整理备份…</text>
+      </view>
+
+      <block wx:else>
+        <view class="export-preview-wrap">
+          <scroll-view class="export-preview" scroll-y>
+            <view class="export-md">{{exportMd}}</view>
+          </scroll-view>
+        </view>
+
+        <view class="export-actions">
+          <view class="export-btn ghost" catchtap="closeExport">取消</view>
+          <view class="export-btn primary {{exportBusy ? 'disabled' : ''}}" catchtap="copyExport">
+            {{exportBusy ? '复制中…' : '复制 Markdown'}}
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <mint-toast id="mintToast" />
+</view>

@@ -1,0 +1,194 @@
+.boot-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1800;
+  background: rgba(246, 244, 239, 0.88);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+  box-sizing: border-box;
+}
+
+.boot-card {
+  width: 100%;
+  max-width: 420rpx;
+  padding: 56rpx 40rpx 48rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  border: 1px solid #e7e3d9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28rpx;
+  box-sizing: border-box;
+  animation: boot-pop 0.35s cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+
+.boot-orbit {
+  position: relative;
+  width: 140rpx;
+  height: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boot-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  border: 4rpx solid #e7f3ef;
+  border-top-color: #1f6f5c;
+  border-right-color: #3fb6a0;
+  animation: boot-spin 0.9s linear infinite;
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+}
+
+.boot-book {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #1f6f5c 0%, #3fb6a0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: boot-pulse 1.4s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+
+.boot-book-char {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.boot-dot {
+  position: absolute;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #3fb6a0;
+}
+
+.boot-dot.d1 {
+  top: 8rpx;
+  left: 50%;
+  margin-left: -6rpx;
+  animation: boot-dot 1.2s ease-in-out infinite;
+}
+
+.boot-dot.d2 {
+  right: 10rpx;
+  bottom: 28rpx;
+  background: #1f6f5c;
+  animation: boot-dot 1.2s ease-in-out 0.2s infinite;
+}
+
+.boot-dot.d3 {
+  left: 10rpx;
+  bottom: 28rpx;
+  background: #c9852a;
+  animation: boot-dot 1.2s ease-in-out 0.4s infinite;
+}
+
+.boot-text {
+  font-size: 26rpx;
+  color: #5a5046;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+
+.boot-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10rpx;
+  height: 28rpx;
+}
+
+.boot-bar {
+  width: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #3fb6a0 0%, #1f6f5c 100%);
+  transform-origin: center bottom;
+  animation: boot-bar 0.9s ease-in-out infinite;
+}
+
+.boot-bar.b1 {
+  height: 12rpx;
+  animation-delay: 0s;
+}
+
+.boot-bar.b2 {
+  height: 22rpx;
+  animation-delay: 0.15s;
+}
+
+.boot-bar.b3 {
+  height: 16rpx;
+  animation-delay: 0.3s;
+}
+
+@keyframes boot-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12rpx);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes boot-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes boot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+  }
+}
+
+@keyframes boot-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes boot-bar {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}

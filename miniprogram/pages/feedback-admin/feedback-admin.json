@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "反馈管理",
+  "navigationBarBackgroundColor": "#f6f4ef",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#f6f4ef",
+  "usingComponents": {
+    "boot-loading": "/components/boot-loading/boot-loading"
+  }
+}

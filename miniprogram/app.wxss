@@ -1,0 +1,64 @@
+page {
+  --bg: #f6f4ef;
+
+  --ink: #2a241c;
+  --muted: #8a7f72;
+  --line: rgba(42, 36, 28, 0.1);
+  --teal: #2f6f6a;
+  --card: #ffffff;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 28rpx;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+view,
+text,
+input,
+textarea,
+button {
+  box-sizing: border-box;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 12rpx;
+  padding: 16rpx 28rpx;
+  font-size: 28rpx;
+  line-height: 1.2;
+  border: none;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--teal);
+  border: 1rpx solid rgba(47, 111, 106, 0.35);
+}
+
+.btn.block {
+  width: 100%;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 14rpx;
+  margin-right: 10rpx;
+  margin-bottom: 8rpx;
+  border-radius: 999rpx;
+  background: rgba(47, 111, 106, 0.1);
+  color: var(--teal);
+  font-size: 22rpx;
+}

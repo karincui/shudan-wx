@@ -1,0 +1,111 @@
+<view class="page" style="{{pageTheme}}">
+  <view class="card">
+    <view class="head">
+      <view class="title">表格录入</view>
+      <view class="desc muted">像 Excel 一样直接填格子；也可从 Excel 复制后粘贴进来。支持上传 .xlsx / .csv</view>
+    </view>
+
+    <view class="toolbar">
+      <view class="tb-btn primary {{!filledCount || importing ? 'disabled' : ''}}" bindtap="onImportAll">全部入库</view>
+      <view class="tb-btn" bindtap="addRows">+ 加 5 行</view>
+      <view class="tb-btn" bindtap="onClear">清空</view>
+      <view class="tb-btn" bindtap="onTemplate">下载模板</view>
+      <view class="tb-btn" bindtap="onUpload">上传文件</view>
+      <view class="tb-btn" bindtap="onPaste">粘贴</view>
+    </view>
+    <view class="tip muted">点任意格开始输入；标签点选，不支持手输</view>
+
+    <scroll-view class="table-scroll" scroll-x enable-flex>
+      <view class="table">
+        <view class="tr th">
+          <view class="td idx">#</view>
+          <view class="td title-col">书名</view>
+          <view class="td author-col">作者</view>
+          <view class="td syn-col">简介</view>
+          <view class="td tags-col">标签</view>
+          <view class="td del-col"></view>
+        </view>
+
+        <view class="tr" wx:for="{{rows}}" wx:key="key">
+          <view class="td idx">{{index + 1}}</view>
+          <view class="td title-col">
+            <input
+              class="cell"
+              placeholder="必填"
+              placeholder-class="ph"
+              value="{{item.title}}"
+              data-index="{{index}}"
+              data-field="title"
+              bindinput="onCellInput"
+            />
+          </view>
+          <view class="td author-col">
+            <input
+              class="cell"
+              placeholder="选填"
+              placeholder-class="ph"
+              value="{{item.author}}"
+              data-index="{{index}}"
+              data-field="author"
+              bindinput="onCellInput"
+            />
+          </view>
+          <view class="td syn-col">
+            <input
+              class="cell"
+              placeholder="选填"
+              placeholder-class="ph"
+              value="{{item.synopsis}}"
+              data-index="{{index}}"
+              data-field="synopsis"
+              bindinput="onCellInput"
+            />
+          </view>
+          <view class="td tags-col pick" data-index="{{index}}" bindtap="openTagPicker">
+            <text class="tags-text">{{item.tagsText}}</text>
+            <text class="tags-caret">▾</text>
+          </view>
+          <view class="td del-col" data-index="{{index}}" bindtap="removeRow">×</view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="foot muted">已填书名 {{filledCount}} 行</view>
+  </view>
+
+  <view wx:if="{{tagPickerOpen}}" class="picker-mask" catchtouchmove="noop" bindtap="closeTagPicker">
+    <view class="picker-sheet" catchtap="noop">
+      <view class="picker-head">
+        <text class="picker-title">选择标签</text>
+        <text class="picker-done" bindtap="closeTagPicker">完成</text>
+      </view>
+      <view class="picker-sub muted">第 {{tagPickerIndex + 1}} 行 · 可多选</view>
+      <view class="picker-add">
+        <input
+          class="picker-input"
+          placeholder="自定义标签，回车添加"
+          value="{{pickerNewTag}}"
+          confirm-type="done"
+          bindinput="onPickerNewTag"
+          bindconfirm="addPickerTag"
+        />
+        <view class="picker-add-btn" bindtap="addPickerTag">
+          <text class="add-plus">+</text>
+          <text>添加</text>
+        </view>
+      </view>
+      <scroll-view class="picker-body" scroll-y>
+        <view class="chip-wrap">
+          <view
+            class="chip {{tagPickerMap[item] ? 'on' : ''}}"
+            wx:for="{{allTags}}"
+            wx:key="*this"
+            data-tag="{{item}}"
+            bindtap="togglePickerTag"
+          >{{item}}</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>

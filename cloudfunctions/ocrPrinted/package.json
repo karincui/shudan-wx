@@ -1,0 +1,9 @@
+{
+  "name": "ocrPrinted",
+  "version": "1.0.0",
+  "description": "通用印刷体 OCR",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

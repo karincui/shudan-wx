@@ -1,0 +1,59 @@
+<view class="page paper-mint page-with-tab">
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px;">
+      <text class="nav-title">导入书单</text>
+    </view>
+  </view>
+  <view class="nav-spacer" style="height: {{statusBarHeight + navBarHeight}}px;"></view>
+
+  <view class="content">
+    <view class="intro">选择一种方式批量导入。同书名 + 作者已存在时会自动跳过。</view>
+
+    <view class="grid">
+      <view class="entry" bindtap="importScreenshot" hover-class="entry-hover">
+        <view class="entry-ico-wrap">
+          <image class="entry-ico" src="/images/icons/import-camera.svg" mode="aspectFit" />
+        </view>
+        <text class="entry-name">截图录入</text>
+        <text class="entry-desc">OCR 识别截图文字</text>
+      </view>
+
+      <view class="entry" bindtap="goTableImport" hover-class="entry-hover">
+        <view class="entry-ico-wrap">
+          <image class="entry-ico" src="/images/icons/import-table.svg" mode="aspectFit" />
+        </view>
+        <text class="entry-name">表格录入</text>
+        <text class="entry-desc">逐格填写并入库</text>
+      </view>
+
+      <view class="entry" bindtap="importTableFile" hover-class="entry-hover">
+        <view class="entry-ico-wrap">
+          <image class="entry-ico" src="/images/icons/import-excel.svg" mode="aspectFit" />
+        </view>
+        <text class="entry-name">Excel / CSV</text>
+        <text class="entry-desc">.xlsx / .xls / .csv</text>
+      </view>
+
+      <view class="entry" bindtap="onBackupEntry" hover-class="entry-hover">
+        <view class="entry-ico-wrap">
+          <image class="entry-ico" src="/images/icons/import-backup.svg" mode="aspectFit" />
+        </view>
+        <text class="entry-name">备份录入</text>
+        <text class="entry-desc">.md 备份文件 / 内置备份</text>
+      </view>
+    </view>
+
+    <view class="tips-card">
+      <view class="tips-title">导入须知</view>
+      <view class="tips-row">
+        <text class="tips-k">去重规则</text>
+        <text class="tips-v">书名 + 作者</text>
+      </view>
+      <view class="tips-row last">
+        <text class="tips-k">临时文件</text>
+        <text class="tips-v">导入后自动清理</text>
+      </view>
+    </view>
+  </view>
+  <mint-toast id="mintToast" />
+</view>
